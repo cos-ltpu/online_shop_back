@@ -1,0 +1,38 @@
+version: "2.4"
+
+services:
+
+  shop-postgres:
+    container_name: shop-postgres
+    build: ./docker/postgres
+    image: shop-postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - ./docker-data/postgres/data:/var/lib/postgresql/data
+    environment:
+      PGDATA: /var/lib/postgresql/data/
+    restart: always
+
+  shop-nodejs:
+    container_name: shop-nodejs
+    build: ./docker/nodejs
+    image: shop-nodejs
+    volumes:
+      - .:/app
+    ports:
+      - 8090:${PORT}
+      - 5555:5555
+    env_file:
+      - .env
+    depends_on:
+      - shop-postgres
+    command: yarn prod
+    restart: always
+
+networks:
+  default:
+    external:
+      name: shop
