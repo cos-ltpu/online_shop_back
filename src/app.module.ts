@@ -8,9 +8,11 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { PhotosModule } from './photos/photos.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FavoritesModule } from './favorites/favorites.module';
-import { ArticlesInOrderModule } from './articles-in-order/articles-in-order.module';
+import { ArticlesInOrdersModule } from './articles-in-order/articles-in-order.module';
 import { AuthModule } from './auth/auth.module';
 import {ArticlesInCategoriesModule} from "./articles-in-categories/articles-in-categories.module";
+import {MinioModule} from "nestjs-minio-client";
+import {AModule} from "./a/a.module";
 
 @Module({
   imports: [
@@ -22,9 +24,11 @@ import {ArticlesInCategoriesModule} from "./articles-in-categories/articles-in-c
     PhotosModule,
     CategoriesModule,
     FavoritesModule,
-    ArticlesInOrderModule,
+    ArticlesInOrdersModule,
     AuthModule,
     ArticlesInCategoriesModule,
+    MinioModule,
+      AModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -1,4 +1,9 @@
-import { Controller } from '@nestjs/common';
+import {Controller} from '@nestjs/common';
+import {ArticlesInOrdersService} from "./articles-in-order.service";
 
-@Controller('articles-in-order')
-export class ArticlesInOrderController {}
+@Controller('articlesInOrders')
+export class ArticlesInOrdersController {
+
+    constructor(private readonly ainoService: ArticlesInOrdersService) {
+    }
+}

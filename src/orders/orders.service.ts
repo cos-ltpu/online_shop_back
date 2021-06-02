@@ -1,54 +1,63 @@
 import { Injectable } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {Connection, Repository} from "typeorm";
 import {Orders} from "./entities/orders.entity";
 import {CreateOrderDto} from "./dto/crete-order.dto";
-import {ArticlesInOrderService} from "../articles-in-order/articles-in-order.service";
+import {ArticlesInOrdersService} from "../articles-in-order/articles-in-order.service";
 import {ArticlesService} from "../articles/articles.service";
 
 @Injectable()
 export class OrdersService {
     constructor(
-        private readonly articlesInOrderService: ArticlesInOrderService,
+        private connection: Connection,
+        private readonly articlesInOrdersService: ArticlesInOrdersService,
         private readonly articlesService: ArticlesService,
         @InjectRepository(Orders) private readonly ordersRepository: Repository<Orders>,
     ) {}
 
     async createOrder(user_id: number, createOrderDto: CreateOrderDto) {
+        createOrderDto.count = 0;
+        createOrderDto.price = 0;
+        createOrderDto.user_id = user_id;
+        createOrderDto.status = 1;
+        createOrderDto.date = "" + new Date();
+
+        const id = await this.getNextID();
+        createOrderDto.id = id;
+
+        const queryRunner = this.connection.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
         try {
 
-            createOrderDto.count = 0;
-            createOrderDto.price = 0;
-
             for (let k = 0; k < createOrderDto.articles.length; k++ ) {
-                if ( (await this.articlesService.findOne(createOrderDto.articles[k].id)).count < createOrderDto.articles[k].count)
+                if ((await this.articlesService.findOne(createOrderDto.articles[k].id)).count < createOrderDto.articles[k].count) {
                     throw new Error('Count is not correct')
-                else
+                }
+                else {
                     createOrderDto.count += createOrderDto.articles[k].count
                     createOrderDto.price += (await this.articlesService.findOne(createOrderDto.articles[k].id)).price * createOrderDto.articles[k].count
+                }
             }
-
-            createOrderDto.user_id = user_id
-            createOrderDto.status = 1
-            createOrderDto.date = "" + new Date()
-
-            const id = await this.getNextID();
-            createOrderDto.id = id;
-
             const { articles, ...result } = createOrderDto;
-            const order = await this.ordersRepository.create(result);
-            await this.ordersRepository.save(order);
+            const res = await this.ordersRepository.create(result)
+            await queryRunner.manager.save(res);
+            let list = []
 
-            console.log(order)
             for (let i = 0; i < createOrderDto.articles.length; i++ ) {
-                let link = await this.articlesInOrderService.create(id, createOrderDto.articles[i].id, createOrderDto.articles[i].count)
-                await this.articlesService.inc(createOrderDto.articles[i].id, createOrderDto.articles[i].count)
+                list.push({order_id: id, article_id: createOrderDto.articles[i].id, count: createOrderDto.articles[i].count})
             }
+            await this.articlesInOrdersService.createMany(list)
+            await queryRunner.commitTransaction();
         }
         catch (e) {
+            await queryRunner.rollbackTransaction();
             return {
                 message: 'Order was not created'
             }
+        } finally {
+            await queryRunner.release();
         }
     }
 

@@ -16,6 +16,18 @@ services:
       PGDATA: /var/lib/postgresql/data/
     restart: always
 
+  shop-minio:
+    container_name: shop-minio
+    image: minio/minio:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - ./docker-data/minio/data:/data
+    command: server /data
+    env_file:
+      - .env
+    restart: always
+
   shop-nodejs:
     container_name: shop-nodejs
     build: ./docker/nodejs

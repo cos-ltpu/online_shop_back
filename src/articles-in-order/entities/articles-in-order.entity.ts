@@ -1,5 +1,4 @@
 import {Column, Entity, PrimaryColumn, ManyToOne} from "typeorm";
-import {Orders} from "../../orders/entities/orders.entity";
 
 @Entity({
     name: 'articlesInOrders'
@@ -24,6 +23,4 @@ export class ArticlesInOrders {
     })
     count: number;
 
-    @ManyToOne(type => Orders, order => order.id)
-    order: Orders;
 }

@@ -2,16 +2,18 @@ import {Body, Controller, Get, Headers, HttpCode, Param, Post, Request, UseGuard
 import {AuthGuard} from "@nestjs/passport";
 import {ReviewsService} from "./reviews.service";
 import { CreateReviewDto } from "./dto/create-review.dto"
+import {ApiBearerAuth} from "@nestjs/swagger";
 
 @Controller('reviews')
 export class ReviewsController {
     constructor(private readonly reviewsService: ReviewsService) {
     }
 
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @HttpCode(200)
     @Post('create')
-    async newFavorite(@Headers("token") token: string, @Request() req, @Body() createReviewDto: CreateReviewDto) {
+    async newFavorite(@Request() req, @Body() createReviewDto: CreateReviewDto) {
         return this.reviewsService.createReviews(req.user.id, createReviewDto);
     }
 

@@ -2,34 +2,37 @@ import {Body, Controller, Get, Headers, HttpCode, Post, Request, UseGuards} from
 import {UsersService} from "./users.service";
 import {CreateUserDto} from "./dto/create-user.dto";
 import {AuthGuard} from "@nestjs/passport";
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 
-@Controller('users')
+@Controller()
 export class UsersController {
     constructor(private readonly usersService: UsersService) {
     }
 
     @HttpCode(200)
-    @Post('register')
+    @Post('api/register')
     async newUser(@Body() createUserDto: CreateUserDto) {
         return this.usersService.createUser(createUserDto);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('profile')
+    @Get('api/profile')
     getProfile(@Headers("token") token: string, @Request() req) {
         return this.usersService.findById(req.user.id);
     }
 
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Get('profile/favorites')
-    async getFavorites(@Headers("token") token: string, @Request() req) {
+    @Get('api/profile/favorites')
+    async getFavorites(@Request() req) {
         return this.usersService.getFavorites(req.user.id);
     }
 
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Get('profile/orders')
-    async getOrders(@Headers("token") token: string, @Request() req) {
+    @Get('api/profile/orders')
+    async getOrders(@Request() req) {
         return this.usersService.getOrders(req.user.id);
     }
 }

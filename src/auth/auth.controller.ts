@@ -3,13 +3,24 @@ import {AuthService} from "./auth.service";
 import {AuthGuard} from "@nestjs/passport";
 import {LoginUserDto} from "./dto/login-user.dto";
 
-@Controller('auth')
+@Controller()
 export class AuthController {
     constructor(private authService: AuthService) {}
 
     @UseGuards(AuthGuard('local'))
-    @Post('login')
+    @Post('api/login')
     async login(@Body() loginUserDto: LoginUserDto, @Request() req) {
         return this.authService.login(req.user);
     }
+
+    @UseGuards(AuthGuard('local'))
+    @Post('api/check')
+    async check(@Request() req) {
+        let stat = false
+        if (req) stat = true
+        return {
+            active: stat,
+        };
+    }
+
 }

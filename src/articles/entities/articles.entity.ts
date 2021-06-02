@@ -1,4 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn, OneToMany} from "typeorm";
+import {Column, Entity, PrimaryGeneratedColumn, OneToMany, JoinColumn} from "typeorm";
 import { Photos } from '../../photos/entities/photos.entity';
 import {Reviews} from "../../reviews/entities/reviews.entity";
 import {ArticlesInCategories} from "../../articles-in-categories/entities/articles-in-categories.entity";
@@ -32,6 +32,7 @@ export class Articles {
     count: number;
 
     @OneToMany(type => Photos, photo => photo.article_id)
+    @JoinColumn()
     photos: Photos[];
 
     @OneToMany(type => ArticlesInCategories, AC => AC.article_id)
