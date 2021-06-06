@@ -26,6 +26,5 @@ export class CreateOrderDto {
 
     status: number;
 
-    @ApiProperty() @IsNotEmpty()
     articles: {id: number, count: number }[]
 }

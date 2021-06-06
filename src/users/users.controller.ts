@@ -16,9 +16,10 @@ export class UsersController {
         return this.usersService.createUser(createUserDto);
     }
 
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('api/profile')
-    getProfile(@Headers("token") token: string, @Request() req) {
+    getProfile( @Request() req) {
         return this.usersService.findById(req.user.id);
     }
 

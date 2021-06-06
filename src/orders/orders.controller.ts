@@ -4,7 +4,7 @@ import {CreateOrderDto} from "./dto/crete-order.dto";
 import {AuthGuard} from "@nestjs/passport";
 import {ApiBearerAuth} from "@nestjs/swagger";
 
-@Controller('orders')
+@Controller('api')
 export class OrdersController {
 
     constructor(private readonly ordersService: OrdersService) {

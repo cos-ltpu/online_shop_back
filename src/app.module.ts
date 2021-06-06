@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import {ArticlesInCategoriesModule} from "./articles-in-categories/articles-in-categories.module";
 import {MinioModule} from "nestjs-minio-client";
 import {AModule} from "./a/a.module";
+import {CartModule} from "./cart/cart.module";
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import {AModule} from "./a/a.module";
     ArticlesInOrdersModule,
     AuthModule,
     ArticlesInCategoriesModule,
+      CartModule,
     MinioModule,
       AModule,
   ],

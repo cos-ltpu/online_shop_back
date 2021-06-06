@@ -5,7 +5,7 @@ import {DeleteFavoriteDto} from "./dto/delete-favorite.dto";
 import {AuthGuard} from "@nestjs/passport";
 import {ApiBearerAuth} from "@nestjs/swagger";
 
-@Controller('favorites')
+@Controller('api/favorites')
 export class FavoritesController {
     constructor(private readonly favoritesService: FavoritesService) {
     }
@@ -19,6 +19,7 @@ export class FavoritesController {
     }
 
     @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @HttpCode(200)
     @Post('remove')
     async delFavorite(@Request() req, @Body() deleteFavoriteDto: DeleteFavoriteDto) {

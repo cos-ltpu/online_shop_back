@@ -5,28 +5,36 @@ import {Orders} from "./entities/orders.entity";
 import {CreateOrderDto} from "./dto/crete-order.dto";
 import {ArticlesInOrdersService} from "../articles-in-order/articles-in-order.service";
 import {ArticlesService} from "../articles/articles.service";
+import {CartService} from "../cart/cart.service";
 
 @Injectable()
 export class OrdersService {
     constructor(
         private connection: Connection,
+        private readonly cartService: CartService,
         private readonly articlesInOrdersService: ArticlesInOrdersService,
         private readonly articlesService: ArticlesService,
         @InjectRepository(Orders) private readonly ordersRepository: Repository<Orders>,
     ) {}
 
-    async createOrder(user_id: number, createOrderDto: CreateOrderDto) {
+     async createOrder(user_id: number, createOrderDto: CreateOrderDto) {
         createOrderDto.count = 0;
         createOrderDto.price = 0;
         createOrderDto.user_id = user_id;
         createOrderDto.status = 1;
         createOrderDto.date = "" + new Date();
 
+        const cart = await this.cartService.find(user_id)
+
+         let array = []
+        for (let i=0; i<cart.length; i++) {
+            array[i]={id: cart[i].article_id, count: 1}
+        }
+        createOrderDto.articles = array
+
         const id = await this.getNextID();
         createOrderDto.id = id;
-
         const queryRunner = this.connection.createQueryRunner();
-
         await queryRunner.connect();
         await queryRunner.startTransaction();
         try {
@@ -50,6 +58,7 @@ export class OrdersService {
             }
             await this.articlesInOrdersService.createMany(list)
             await queryRunner.commitTransaction();
+            await this.cartService.delAll(user_id);
         }
         catch (e) {
             await queryRunner.rollbackTransaction();
