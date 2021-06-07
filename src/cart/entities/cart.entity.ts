@@ -19,4 +19,9 @@ export class Cart {
         unique: false
     })
     article_id: number;
+
+    @Column({
+        unique: false
+    })
+    count: number;
 }

@@ -4,4 +4,7 @@ import {ApiProperty} from "@nestjs/swagger";
 export class CartDto {
     @ApiProperty() @IsNotEmpty()
     article_id: number;
+
+    @ApiProperty() @IsNotEmpty()
+    count: number;
 }

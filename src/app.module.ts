@@ -12,7 +12,6 @@ import { ArticlesInOrdersModule } from './articles-in-order/articles-in-order.mo
 import { AuthModule } from './auth/auth.module';
 import {ArticlesInCategoriesModule} from "./articles-in-categories/articles-in-categories.module";
 import {MinioModule} from "nestjs-minio-client";
-import {AModule} from "./a/a.module";
 import {CartModule} from "./cart/cart.module";
 
 @Module({
@@ -29,8 +28,7 @@ import {CartModule} from "./cart/cart.module";
     AuthModule,
     ArticlesInCategoriesModule,
       CartModule,
-    MinioModule,
-      AModule,
+    MinioModule
   ],
   controllers: [AppController],
   providers: [],

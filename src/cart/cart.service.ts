@@ -11,9 +11,15 @@ export class CartService {
         @InjectRepository(Cart) private readonly cartRepository: Repository<Cart>,
     ) {}
 
-    async add(user_id: number, {article_id: article_id}) {
-        const res = await this.cartRepository.create({user_id: user_id, article_id: article_id})
-        await this.cartRepository.save(res);
+    async add(user_id: number, {article_id: article_id, count: count}) {
+        const res = await this.cartRepository.findOne({where: {user_id: user_id, article_id: article_id}})
+        if (!res) {
+        const save = await this.cartRepository.create({user_id: user_id, article_id: article_id, count: count})
+        await this.cartRepository.save(save);
+        }
+        else {
+            await this.cartRepository.update({user_id: user_id, article_id: article_id}, {count: res.count+count})
+        }
     }
 
     async del(user_id: number, {article_id: article_id}) {

@@ -3,12 +3,14 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {ArticlesInOrders} from "./entities/articles-in-order.entity";
 import {Repository} from "typeorm";
 import {Connection} from "typeorm";
+import {ArticlesService} from "../articles/articles.service";
 
 @Injectable()
 export class ArticlesInOrdersService {
 
     constructor(
         private connection: Connection,
+        private readonly articlesService: ArticlesService,
         @InjectRepository(ArticlesInOrders) private readonly articlesInOrdersRepository: Repository<ArticlesInOrders>,
     ) {}
 
@@ -32,6 +34,7 @@ export class ArticlesInOrdersService {
             const res = await this.articlesInOrdersRepository.create(list[k])
             await this.articlesInOrdersRepository.save(res)
             await queryRunner.manager.save(res)
+            await this.articlesService.inc(list[k].article_id, list[k].count)
         }
         await queryRunner.commitTransaction();
     } catch (err) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Connection, Repository} from "typeorm";
+import {Column, Connection, CreateDateColumn, PrimaryColumn, Repository} from "typeorm";
 import {Orders} from "./entities/orders.entity";
 import {CreateOrderDto} from "./dto/crete-order.dto";
 import {ArticlesInOrdersService} from "../articles-in-order/articles-in-order.service";
@@ -81,7 +81,33 @@ export class OrdersService {
         return (maxID + 1)
     }
 
+    encode(cod: number) {
+        let res = ''
+        switch(cod) {
+            case 0:
+                res = 'Заказ получен'
+                break
+            case 1:
+                res = 'Заказ в обработке'
+                break
+            case 2:
+                res = 'Заказ собиратеся на складе'
+                break
+            case 3:
+                res = 'Заказ ожидает отправку'
+            case 4:
+                res = 'Заказ ожидает получателя в пункте выдачи'
+                break
+        }
+        return res
+    }
+
     async findById(user_id: number){
-        return this.ordersRepository.find({where: {user_id: user_id}})
+        let res = await this.ordersRepository.find({where: {user_id: user_id}})
+        let result = []
+        for (let i=0; i<res.length; i++){
+            result[i] = {id: res[i].id, price: res[i].price, count: res[i].count, date: res[i].date, status: this.encode(res[i].status)}
+        }
+        return result
     }
 }
