@@ -33,6 +33,7 @@ export class CartService {
         for (let k = 0; k < res.length; k++ )
         {
             result[k] = await this.articlesService.findOne(res[k].article_id)
+            result[k].count = res[k].count
         }
         return result
     }
@@ -41,6 +42,17 @@ export class CartService {
         const res = await this.cartRepository.find({where: {user_id: user_id}})
         for (let i = 0; i < res.length; i++) {
             await this.cartRepository.remove((await this.cartRepository.findOne({where: {user_id: user_id}})))
+        }
+    }
+
+    async change(user_id: number, {article_id: article_id, count: count}){
+        const res = await this.cartRepository.findOne({where: {user_id: user_id, article_id: article_id}})
+        if (!res) {
+            const save = await this.cartRepository.create({user_id: user_id, article_id: article_id, count: count})
+            await this.cartRepository.save(save);
+        }
+        else {
+            await this.cartRepository.update({user_id: user_id, article_id: article_id}, {count: count})
         }
     }
 }

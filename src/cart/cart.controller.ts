@@ -21,6 +21,14 @@ export class CartController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @HttpCode(200)
+    @Post('change')
+    async Change(@Request() req, @Body() CartDto: CartDto) {
+        return this.cartService.change(req.user.id, CartDto);
+    }
+
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
+    @HttpCode(200)
     @Post('del')
     async Del(@Request() req, @Body() CartDto: CartDto) {
         return this.cartService.del(req.user.id, CartDto);
