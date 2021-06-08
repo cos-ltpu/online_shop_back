@@ -2,6 +2,7 @@ import {Body, Controller, Post, Request, UseGuards} from '@nestjs/common';
 import {AuthService} from "./auth.service";
 import {AuthGuard} from "@nestjs/passport";
 import {LoginUserDto} from "./dto/login-user.dto";
+import {ApiBearerAuth} from "@nestjs/swagger";
 
 @Controller()
 export class AuthController {
@@ -13,13 +14,17 @@ export class AuthController {
         return this.authService.login(req.user);
     }
 
-    @UseGuards(AuthGuard('local'))
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @Post('api/check')
     async check(@Request() req) {
         let stat = false
         if (req) stat = true
         return {
-            active: stat,
+            type: 'success',
+            message: {
+                active: stat,
+            }
         };
     }
 
