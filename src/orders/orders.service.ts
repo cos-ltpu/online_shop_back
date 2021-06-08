@@ -28,7 +28,7 @@ export class OrdersService {
 
          let array = []
         for (let i=0; i<cart.length; i++) {
-            array[i]={id: cart[i].article_id, count: 1}
+            array[i]={id: cart[i].id, count: cart[i].count}
         }
         createOrderDto.articles = array
 
@@ -37,6 +37,7 @@ export class OrdersService {
         const queryRunner = this.connection.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
+
         try {
 
             for (let k = 0; k < createOrderDto.articles.length; k++ ) {
@@ -56,8 +57,11 @@ export class OrdersService {
             for (let i = 0; i < createOrderDto.articles.length; i++ ) {
                 list.push({order_id: id, article_id: createOrderDto.articles[i].id, count: createOrderDto.articles[i].count})
             }
+
             await this.articlesInOrdersService.createMany(list)
+
             await queryRunner.commitTransaction();
+
             await this.cartService.delAll(user_id);
         }
         catch (e) {
