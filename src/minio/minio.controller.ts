@@ -1,13 +1,15 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import {Controller, Get, HttpCode, Param, Res, UseGuards} from '@nestjs/common';
 import { Response } from 'express';
 
 import { MinioService} from "./minio.service";
+import {ApiBearerAuth} from "@nestjs/swagger";
+import {AuthGuard} from "@nestjs/passport";
 
 export enum Routes {
     DOWNLOAD = 'download',
 }
 
-@Controller(Routes.DOWNLOAD)
+@Controller('api/download')
 export class MinioController {
     constructor(private readonly minioService: MinioService) {}
 
@@ -18,4 +20,6 @@ export class MinioController {
     ) {
         await this.minioService.downloadFile(fileName, response);
     }
+
 }
+
