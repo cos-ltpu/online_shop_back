@@ -11,7 +11,7 @@ export async function edit (string: string) {
                 k--
             }
         }
-    console.log(arr)
+
         for (let k = 0; k < arr.length; k++) {
             for (let i = 0; i < endings.length; i++) {
                 let number = arr[k].lastIndexOf(endings[i])
@@ -20,6 +20,6 @@ export async function edit (string: string) {
                 }
             }
         }
-    console.log(arr)
+
         return arr
     }

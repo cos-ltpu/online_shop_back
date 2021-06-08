@@ -11,7 +11,7 @@ import { FavoritesModule } from './favorites/favorites.module';
 import { ArticlesInOrdersModule } from './articles-in-order/articles-in-order.module';
 import { AuthModule } from './auth/auth.module';
 import {ArticlesInCategoriesModule} from "./articles-in-categories/articles-in-categories.module";
-import {MinioModule} from "nestjs-minio-client";
+import {MinioModule} from "./minio/minio.module";
 import {CartModule} from "./cart/cart.module";
 
 @Module({
@@ -27,7 +27,7 @@ import {CartModule} from "./cart/cart.module";
     ArticlesInOrdersModule,
     AuthModule,
     ArticlesInCategoriesModule,
-      CartModule,
+    CartModule,
     MinioModule
   ],
   controllers: [AppController],

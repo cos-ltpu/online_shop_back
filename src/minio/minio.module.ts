@@ -7,4 +7,4 @@ import {MinioService} from "./minio.service";
     providers: [MinioService],
     exports: [MinioService]
 })
-export class OrdersModule {}
+export class MinioModule {}
